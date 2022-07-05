@@ -10,6 +10,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include"DebugCamera.h"
+#include"Player.h"
+#include"Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -56,11 +58,12 @@ class GameScene {
 	Sprite* sprite_ = nullptr;
 	//3Dモデル
 	Model* model_ = nullptr;
-	//ワールドトランスフォーム
-	WorldTransform worldTransform_;
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
-
+	//自キャラ
+	Player* player_ = nullptr;
+	//敵
+	Enemy* enemy_ = nullptr;
 };

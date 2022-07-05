@@ -10,6 +10,8 @@ GameScene::~GameScene() {
 	delete sprite_;
 	delete model_;
 	delete debugCamera_;
+	delete player_;
+	delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -18,13 +20,9 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 	//ファイル名を指定してテクスチャを読み込む	
-	textureHandle_ = TextureManager::Load("mario.jpg");
+	textureHandle_ = TextureManager::Load("mario_cart.jpg");
 	sprite_ = Sprite::Create(textureHandle_, { 120,50 });
 	model_ = Model::Create();
-	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
-	//ビュープロジェクションの初期化
-	viewProjection_.Initialize();
 
 	//デバッグカメラの生成
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
@@ -34,10 +32,26 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
+
+	//自キャラの生成
+	player_ = new Player();
+	//自キャラの初期化
+	player_->Initialize(model_,textureHandle_);
+	//ビュープロジェクションの初期化
+	viewProjection_.Initialize();
+	//敵の生成
+	enemy_ = new Enemy();
+	//敵の初期化
+	enemy_->Initialize(model_);
+
 }
 
 void GameScene::Update() {
 	debugCamera_->Update();
+	player_->Update();
+	if (enemy_ != nullptr) {
+		enemy_->Update();
+	}
 }
 
 void GameScene::Draw() {
@@ -66,13 +80,17 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	//3Dモデル描画
-	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	//自キャラの描画
+	player_->Draw(viewProjection_);
+	//敵の描画
+	if (enemy_ != nullptr) {
+		enemy_->Draw(viewProjection_);
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
-	PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(-(WinApp::kWindowWidth), 0, 0), Vector3(WinApp::kWindowWidth, 0, 0), Vector4(100, 100, 100, 100));
+	//PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(-(WinApp::kWindowWidth), 0, 0), Vector3(WinApp::kWindowWidth, 0, 0), Vector4(100, 100, 100, 100));
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
