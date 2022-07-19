@@ -102,3 +102,10 @@ void Player::Attack() {
 		bullets_.push_back(std::move(newBullet));
 	}
 }
+Vector3 Player::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldtransform_.matWorld_.m[3][0];
+	worldPos.y = worldtransform_.matWorld_.m[3][1];
+	worldPos.z = worldtransform_.matWorld_.m[3][2];
+	return worldPos;
+}

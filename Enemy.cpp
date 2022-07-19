@@ -1,5 +1,7 @@
 #include"Enemy.h"
 #include<cassert>
+#include"Player.h"
+using namespace MathUtility;
 void Enemy::Initialize(Model* model) {
 	//NULLポインタチェック
 	assert(model);
@@ -111,13 +113,25 @@ void Enemy::UpdateLeave() {
 }
 void Enemy::Fire() {
 	//弾の速度
-	const float kBulletSpeed = -1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
-	
+	const float kBulletSpeed = 1.0f;
+
+	Vector3 playerPos = player_->GetWorldPosition();
+	Vector3 enemyPos = GetWorldPosition();
+	Vector3 velocity = playerPos - enemyPos;
+	MathUtility::Vector3Normalize(velocity);
+	velocity *= kBulletSpeed;
+
 	//弾を生成し、初期化
 	std::unique_ptr<EnemyBullet> newBullet =
 		std::make_unique<EnemyBullet>();
 	newBullet->Initialize(model_, worldtransform_.translation_, velocity);
 	//弾を登録する
 	bullets_.push_back(std::move(newBullet));
+}
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldtransform_.matWorld_.m[3][0];
+	worldPos.y = worldtransform_.matWorld_.m[3][1];
+	worldPos.z = worldtransform_.matWorld_.m[3][2];
+	return worldPos;
 }
