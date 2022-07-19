@@ -9,16 +9,8 @@ void Enemy::Initialize(Model* model) {
 	worldtransform_.translation_ = { 0,2,50 };
 }
 void Enemy::Update() {
-
-	switch (phase_) {
-	case Phase::Approach:
-		UpdateApproach();
-		break;
-	case Phase::Leave:
-		UpdateLeave();
-		break;
-	}
-
+	//移動(ベクトルを加算)
+	worldtransform_.translation_ += Vector3(0, 0, -0.25f);
 	//スケーリング行列を宣言
 	Matrix4 matScale = MathUtility::Matrix4Identity();
 	matScale.m[0][0] = worldtransform_.scale_.x;
@@ -67,17 +59,4 @@ void Enemy::Update() {
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	//モデルの描画
 	model_->Draw(worldtransform_, viewProjection, textureHandle_);
-}
-
-void Enemy::UpdateApproach() {
-	//移動(ベクトルを加算)
-	worldtransform_.translation_ += Vector3(0, 0, -0.25f);
-	//規定の位置に到達したら離脱
-	if (worldtransform_.translation_.z < 0.0f) {
-		phase_ = Phase::Leave;
-	}
-}
-void Enemy::UpdateLeave() {
-	//移動(ベクトルを加算)
-	worldtransform_.translation_ += Vector3(-0.1f, -0.1f, -0.1f);
 }

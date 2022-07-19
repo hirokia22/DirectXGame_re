@@ -18,12 +18,7 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw(const ViewProjection &viewProjection);
-
-	//行動フェーズ
-	enum class Phase {
-		Approach,	//接近
-		Leave,		//離脱
-	};
+	
 private:
 	//ワールド変換データ
 	WorldTransform worldtransform_;
@@ -32,8 +27,6 @@ private:
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 
-	//フェーズ
-	Phase phase_ = Phase::Approach;
 	//接近フェーズの更新関数
 	void UpdateApproach();
 	//離脱フェーズの更新関数
