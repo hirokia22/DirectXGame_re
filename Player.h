@@ -47,6 +47,6 @@ private:
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
 	//’e
-	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+	PlayerBullet* bullet_ = nullptr;
 
 };

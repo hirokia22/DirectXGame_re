@@ -15,17 +15,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	Matrix4 matScale;
 }
 void Player::Update() {
-	//ƒfƒXƒtƒ‰ƒO‚Ì—§‚Á‚½’e‚ğíœ
-	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
-		return bullet->IsDead();
-		});
 	Move();
 	debugText_->SetPos(50, 150);
 	debugText_->Printf("x:%f,y:%f,y:%f", worldtransform_.translation_.x,
 		worldtransform_.translation_.y, worldtransform_.translation_.z);
 	Attack();
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
-		bullet->Update();
+	if (bullet_) {
+		bullet_->Update();
 	}
 }
 void Player::Move() {
@@ -82,20 +78,17 @@ void Player::Move() {
 }
 void Player::Draw(ViewProjection viewProjection_) {
 	model_->Draw(worldtransform_, viewProjection_, textureHandle_);
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
-		bullet->Draw(viewProjection_);
+	if (bullet_) {
+		bullet_->Draw(viewProjection_);
 	}
 }
 void Player::Attack() {
 	if (input_->TriggerKey(DIK_SPACE)) {
-		//’e‚Ì‘¬“x
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
 		//’e‚ğ¶¬‚µA‰Šú‰»
-		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, worldtransform_.translation_);
 
 		//’e‚ğ“o˜^‚·‚é
-		bullets_.push_back(std::move(newBullet));
+		bullet_ = newBullet;
 	}
 }

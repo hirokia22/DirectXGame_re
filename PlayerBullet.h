@@ -23,7 +23,6 @@ public:
 	/// </summary>
 	void Draw(const ViewProjection& viewProjection);
 
-	bool IsDead() const { return isDead_; }
 private:
 	//ワールド変換データ
 	WorldTransform worldtransform_;
@@ -37,6 +36,4 @@ private:
 	static const int32_t kLifeTime = 60 * 5;
 	//デスタイマー
 	int32_t deathTimer_ = kLifeTime;
-	//デスフラグ
-	bool isDead_ = false;
 };

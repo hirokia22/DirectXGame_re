@@ -46,11 +46,6 @@ void PlayerBullet::Update() {
 	worldtransform_.matWorld_ *= matRotY;
 	worldtransform_.matWorld_ *= matTrans;
 	worldtransform_.TransferMatrix();
-
-	//ŽžŠÔŒo‰ß‚ÅƒfƒX
-	if (--deathTimer_ <= 0) {
-		isDead_ = true;
-	}
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
