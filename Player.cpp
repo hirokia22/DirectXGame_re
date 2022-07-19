@@ -91,12 +91,9 @@ void Player::Attack() {
 		//’e‚Ì‘¬“x
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
-
-		//‘¬“xƒxƒNƒgƒ‹‚ğ©‹@‚ÌŒü‚«‚É‡‚í‚¹‚Ä‰ñ“]‚³‚¹‚é
-		velocity = MathUtility::Vector3TransformNormal(velocity, worldtransform_.matWorld_);
 		//’e‚ğ¶¬‚µA‰Šú‰»
 		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(model_, worldtransform_.translation_, velocity);
+		newBullet->Initialize(model_, worldtransform_.translation_);
 
 		//’e‚ğ“o˜^‚·‚é
 		bullets_.push_back(std::move(newBullet));

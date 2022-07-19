@@ -1,6 +1,6 @@
 #include "PlayerBullet.h"
 #include <cassert>
-void PlayerBullet::Initialize(Model* model, const Vector3& position,const Vector3& velocity) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 	//NULLポインタチェック
 	assert(model);
 
@@ -10,12 +10,9 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position,const Vector
 
 	worldtransform_.Initialize();
 	worldtransform_.translation_ = position;
-	velocity_ = velocity;
 }
 
 void PlayerBullet::Update() {
-	//座標を移動させる(1フレーム分の移動量を足しこむ)
-	worldtransform_.translation_ += velocity_;
 	// スケーリング行列を宣言
 	Matrix4 matScale = MathUtility::Matrix4Identity();
 	matScale.m[0][0] = worldtransform_.scale_.x;

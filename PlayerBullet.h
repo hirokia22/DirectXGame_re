@@ -11,7 +11,7 @@ public:
 	/// </summary>
 	/// <param name ="model">モデル</param>
 	/// <param name ="position">初期座標</param>
-	void Initialize(Model* model, const Vector3& potision,const Vector3& velocity);
+	void Initialize(Model* model, const Vector3& potision);
 
 	/// <summary>
 	/// 更新
