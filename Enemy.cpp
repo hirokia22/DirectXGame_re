@@ -8,7 +8,7 @@ void Enemy::Initialize(Model* model) {
 	model_ = model;
 	textureHandle_ = TextureManager::Load("Enemy01.png");
 	worldtransform_.Initialize();
-	worldtransform_.translation_ = { 10,2,50 };
+	worldtransform_.translation_ = { 5,2,300 };
 	//接近フェーズ初期化
 	InitializeApproach();
 }
@@ -135,3 +135,4 @@ Vector3 Enemy::GetWorldPosition() {
 	worldPos.z = worldtransform_.matWorld_.m[3][2];
 	return worldPos;
 }
+void Enemy::OnCollision() {}

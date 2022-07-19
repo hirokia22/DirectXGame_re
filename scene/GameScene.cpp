@@ -36,7 +36,7 @@ void GameScene::Initialize() {
 	//自キャラの生成
 	player_ = new Player();
 	//自キャラの初期化
-	player_->Initialize(model_,textureHandle_);
+	player_->Initialize(model_, textureHandle_);
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	//敵の生成
@@ -53,6 +53,8 @@ void GameScene::Update() {
 	if (enemy_ != nullptr) {
 		enemy_->Update();
 	}
+	//衝突判定と応答
+	CheckAllCollisions();
 }
 
 void GameScene::Draw() {
@@ -106,5 +108,102 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
+#pragma endregion
+}
+
+void GameScene::CheckAllCollisions() {
+	//判定対象AとBの座標
+	Vector3 posA, posB;
+
+	//自弾リストの取得
+	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets =
+		player_->GetBullet();
+	//敵弾リストの取得
+	const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets =
+		enemy_->GetBullet();
+
+#pragma region 自キャラと敵弾の当たり判定
+	//自キャラの座標
+	posA = player_->GetWorldPosition(); 
+
+	//自キャラと敵弾全ての当たり判定
+	for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets) {
+		posB = bullet->GetWorldPosition();
+
+		float dx = posA.x - posB.x;
+		float dy = posA.y - posB.y;
+		float dz = posA.z - posB.z;
+
+		float d = dx * dx + dy * dy + dz * dz;
+
+		float r = (Player::kRadius + EnemyBullet::kRadius) *
+				  (Player::kRadius + EnemyBullet::kRadius);
+		
+		//球と球の交差判定
+		if (d <= r) {
+			//自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision();
+			//敵弾の衝突時コールバック関数を呼び出す
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵キャラの当たり判定
+	//敵キャラの座標
+	posA = enemy_->GetWorldPosition();
+
+	//敵キャラと自弾全ての当たり判定
+	for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets) {
+		posB = bullet->GetWorldPosition();
+
+		float dx = posA.x - posB.x;
+		float dy = posA.y - posB.y;
+		float dz = posA.z - posB.z;
+
+		float d = dx * dx + dy * dy + dz * dz;
+
+		float r = (Enemy::kRadius + PlayerBullet::kRadius)*
+			(Enemy::kRadius + PlayerBullet::kRadius);
+
+		//球と球の交差判定
+		if (d <= r) {
+			//自キャラの衝突時コールバックを呼び出す
+			enemy_->OnCollision();
+			//敵弾の衝突時コールバック関数を呼び出す
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵弾の当たり判定
+	//自弾全てと敵弾全ての当たり判定
+	for (const std::unique_ptr<PlayerBullet>& playerBullet : playerBullets) {
+		//自弾の座標
+		posA = playerBullet->GetWorldPosition();
+		
+		//自弾全てと敵弾全ての当たり判定
+		for (const std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets) {
+			 //敵弾の座標
+			posB = enemyBullet->GetWorldPosition();
+
+			float dx = posA.x - posB.x;
+			float dy = posA.y - posB.y;
+			float dz = posA.z - posB.z;
+
+			float d = dx * dx + dy * dy + dz * dz;
+
+			float r = (PlayerBullet::kRadius + EnemyBullet::kRadius) *
+				(PlayerBullet::kRadius + EnemyBullet::kRadius);
+
+			//球と球の交差判定
+			if (d <= r) {
+				//自弾の衝突時コールバックを呼び出す
+				playerBullet->OnCollision();
+				//敵弾の衝突時コールバック関数を呼び出す
+				enemyBullet->OnCollision();
+			}
+		}
+	}
 #pragma endregion
 }

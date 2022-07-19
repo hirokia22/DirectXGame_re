@@ -18,6 +18,13 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 	bool IsDead() const { return isDead_; }
+	//衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+	//弾の大きさ
+	static const int kRadius = 1;
 private:
 	//ワールド変換データ
 	WorldTransform worldtransform_;
